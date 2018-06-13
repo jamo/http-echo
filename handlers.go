@@ -18,7 +18,7 @@ const (
 )
 
 // withAppHeaders adds application headers such as X-App-Version and X-App-Name.
-func withAppHeaders(h http.HandlerFunc) http.HandlerFunc {
+func withAppHeaders(h http.HandlerFunc, headers flag.String) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set(httpHeaderAppName, version.Name)
 		w.Header().Set(httpHeaderAppVersion, version.Version)

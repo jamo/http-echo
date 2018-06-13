@@ -16,6 +16,7 @@ import (
 var (
 	listenFlag  = flag.String("listen", ":5678", "address and port to listen")
 	textFlag    = flag.String("text", "", "text to put on the webpage")
+	headersFlag = flag.String("headers", "", "headers to add")
 	versionFlag = flag.Bool("version", false, "display version information")
 
 	// stdoutW and stderrW are for overriding in test.
@@ -37,6 +38,10 @@ func main() {
 		fmt.Fprintln(stderrW, "Missing -text option!")
 		os.Exit(127)
 	}
+	if *headersFlag == "" {
+		fmt.Fprintln(stderrW, "Missing -headers option!")
+		os.Exit(127)
+	}
 
 	args := flag.Args()
 	if len(args) > 0 {
@@ -46,7 +51,7 @@ func main() {
 
 	// Flag gets printed as a page
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", httpLog(stdoutW, withAppHeaders(httpEcho(*textFlag))))
+	mux.HandleFunc("/", httpLog(stdoutW, withAppHeaders(httpEcho(*textFlag), *headersFlag)))
 
 	// Health endpoint
 	mux.HandleFunc("/health", withAppHeaders(httpHealth()))
